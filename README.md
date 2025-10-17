@@ -46,5 +46,44 @@ This project automates the extraction of court listings from eCourts, based on u
 
 1. Clone this repository or unzip the given archive.
 2. Set up your Python environment and install the required dependencies.
+3. git clone <repository_url>
+4. cd ecourts-scraper
+5. pip install -r requirements.txt
+
+
+---
+
+## Usage
+
+Provide case details as prompted or use CLI flags:
+- `--today`: Check for today's listings
+- `--tomorrow`: Check for tomorrow's listings
+- `--causelist`: Download full cause list
+
+Results are shown in the console and saved as JSON/text files[file:1].
+
+---
+
+## Output
+
+- Console summary of case status, serial number, and court name[file:1]
+- Results and cause list saved in JSON or text formats[file:1]
+
+---
+
+## Submission Guidelines
+
+Submit your work through a public GitHub repo or as a ZIP file, including this README[file:1].
+
+---
+
+## Evaluation Criteria
+
+- Accuracy & completeness of features
+- Code quality & clarity
+- Proper error handling, including for invalid input or network errors[file:1]
+
+---
+
 
 
