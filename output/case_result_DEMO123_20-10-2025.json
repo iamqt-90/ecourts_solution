@@ -1,0 +1,23 @@
+{
+  "status": "case_found",
+  "message": "Demo case information retrieved successfully",
+  "cnr": "DEMO123",
+  "case_details": {
+    "case_number": "DEMO/123/2024",
+    "court_name": "Demo District Court",
+    "case_type": "Civil Suit",
+    "filing_date": "15-01-2024",
+    "status": "Pending",
+    "next_hearing": "25-10-2025",
+    "judge": "Hon'ble Justice Demo",
+    "petitioner": "Demo Petitioner",
+    "respondent": "Demo Respondent"
+  },
+  "status_indicators": [
+    "Case is listed for hearing",
+    "Documents filed",
+    "Notice served"
+  ],
+  "real_case_data": true,
+  "demo_mode": true
+}

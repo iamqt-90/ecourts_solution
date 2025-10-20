@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eCourts Scraper</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1E3A5F 0%, #2D4A6B 25%, #F3F4F6 50%, #E5E7EB 75%, #C4A484 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #111827;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 8px 32px rgba(30, 58, 95, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1E3A5F;
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+            font-weight: 600;
+        }
+
+        .search-type {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(243, 244, 246, 0.6);
+            border-radius: 12px;
+        }
+
+        .search-type label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .search-type input {
+            margin-right: 8px;
+            accent-color: #1E3A5F;
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #111827;
+            text-align: left;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #F3F4F6;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .case-type-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .case-type-btn {
+            background-color: #C4A484;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .case-type-btn:hover {
+            background-color: #B8956F;
+            transform: translateY(-2px);
+        }
+
+        .case-type-btn.selected {
+            background-color: #3B82F6;
+        }
+
+        .captcha-section {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid #3B82F6;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            margin: 20px 0;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .captcha-label {
+            color: #1E3A5F;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .captcha-image {
+            display: block;
+            margin: 15px auto;
+            border: 3px solid #1E3A5F;
+            border-radius: 8px;
+            background: white;
+            max-width: 200px;
+        }
+
+        .captcha-input {
+            max-width: 200px;
+            margin: 15px auto 0 auto;
+            text-align: center;
+            font-weight: bold;
+            letter-spacing: 1px;
+            font-size: 14px;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #3B82F6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563EB;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: #C4A484;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #B8956F;
+            transform: translateY(-1px);
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 25px;
+            background: rgba(243, 244, 246, 0.8);
+            border-radius: 12px;
+            border-left: 4px solid #1E3A5F;
+            display: none;
+        }
+
+        .success {
+            color: #059669;
+        }
+
+        .error {
+            color: #DC2626;
+        }
+
+        .loading {
+            color: #3B82F6;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>eCourts Scraper</h1>
+
+        <form id="searchForm">
+            <!-- Search Type Selection -->
+            <div class="search-type">
+                <label>
+                    <input type="radio" name="searchType" value="cnr" checked> Search by CNR
+                </label>
+                <label>
+                    <input type="radio" name="searchType" value="case"> Search by Case Details
+                </label>
+            </div>
+
+            <!-- CNR Search Section -->
+            <div id="cnrSearch" class="form-section">
+                <div class="form-group">
+                    <label for="cnr">CNR Number:</label>
+                    <input type="text" id="cnr" placeholder="e.g., DLCT01-123456-2023">
+                </div>
+            </div>
+
+            <!-- Case Details Search Section -->
+            <div id="caseSearch" class="form-section hidden">
+                <!-- Case Type Selection -->
+                <div id="caseTypeSelection" class="form-group">
+                    <label>Select Case Type:</label>
+                    <div class="case-type-buttons">
+                        <button type="button" class="case-type-btn" data-type="CIV">Civil</button>
+                        <button type="button" class="case-type-btn" data-type="CRL">Criminal</button>
+                    </div>
+                </div>
+
+                <!-- Case Details Form -->
+                <div id="caseDetailsForm" class="hidden">
+                    <div class="form-group">
+                        <label for="selectedCaseType">Case Type:</label>
+                        <input type="text" id="selectedCaseType" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="caseNumber">Case Number:</label>
+                        <input type="text" id="caseNumber" placeholder="e.g., 12345">
+                    </div>
+                    <div class="form-group">
+                        <label for="caseYear">Case Year:</label>
+                        <input type="text" id="caseYear" placeholder="e.g., 2023">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Captcha Section -->
+            <div id="captchaSection" class="captcha-section hidden">
+                <div class="captcha-label">Please solve the captcha to continue:</div>
+                <img id="captchaImage" class="captcha-image" src="" alt="Captcha Image">
+                <input type="text" id="captchaCode" class="captcha-input" placeholder="Enter captcha code"
+                    maxlength="10">
+            </div>
+
+            <!-- Date Selection -->
+            <div id="dateSelection" class="form-group">
+                <label for="dateOption">Check for:</label>
+                <select id="dateOption">
+                    <option value="today">Today</option>
+                    <option value="tomorrow">Tomorrow</option>
+                </select>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button type="submit" class="btn btn-primary">Search Case</button>
+                <button type="button" id="causeListBtn" class="btn btn-secondary">Download Cause List</button>
+            </div>
+        </form>
+
+        <!-- Results Section -->
+        <div id="results" class="results"></div>
+    </div>
+
+    <script>
+        // Toggle search type
+        document.querySelectorAll('input[name="searchType"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                const cnrDiv = document.getElementById('cnrSearch');
+                const caseDiv = document.getElementById('caseSearch');
+
+                if (this.value === 'cnr') {
+                    cnrDiv.classList.remove('hidden');
+                    caseDiv.classList.add('hidden');
+                } else {
+                    cnrDiv.classList.add('hidden');
+                    caseDiv.classList.remove('hidden');
+                }
+
+                // Hide captcha and reset form
+                document.getElementById('captchaSection').classList.add('hidden');
+                document.getElementById('caseDetailsForm').classList.add('hidden');
+            });
+        });
+
+        // Handle case type selection
+        document.querySelectorAll('.case-type-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                // Remove selected class from all buttons
+                document.querySelectorAll('.case-type-btn').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+
+                // Add selected class to clicked button
+                this.classList.add('selected');
+
+                // Set case type and show form
+                const caseType = this.getAttribute('data-type');
+                document.getElementById('selectedCaseType').value = caseType;
+                document.getElementById('caseDetailsForm').classList.remove('hidden');
+                document.getElementById('caseDetailsForm').classList.add('fade-in');
+            });
+        });
+
+        // Handle form submission
+        document.getElementById('searchForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.style.display = 'block';
+            resultsDiv.innerHTML = '<div class="loading">Searching...</div>';
+
+            const searchType = document.querySelector('input[name="searchType"]:checked').value;
+            const dateOption = document.getElementById('dateOption').value;
+
+            let url, data;
+
+            if (searchType === 'cnr') {
+                url = '/search/cnr';
+                data = {
+                    cnr: document.getElementById('cnr').value,
+                    date: dateOption
+                };
+
+                const captchaCode = document.getElementById('captchaCode').value;
+                if (captchaCode) {
+                    data.captcha_code = captchaCode;
+                }
+            } else {
+                url = '/search/case';
+                data = {
+                    case_type: document.getElementById('selectedCaseType').value,
+                    case_number: document.getElementById('caseNumber').value,
+                    case_year: document.getElementById('caseYear').value,
+                    date: dateOption
+                };
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                console.log('API Response:', result);
+
+                if (result.success) {
+                    const listing = result.data;
+
+                    // Handle captcha requirement
+                    if (result.captcha_required || listing.status === 'captcha_required') {
+                        const captchaSection = document.getElementById('captchaSection');
+                        const captchaImage = document.getElementById('captchaImage');
+
+                        if (listing.captcha_url) {
+                            captchaImage.src = listing.captcha_url;
+                        }
+
+                        captchaSection.classList.remove('hidden');
+                        captchaSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                        resultsDiv.innerHTML = `
+                            <div class="loading">
+                                <h3>Captcha Required</h3>
+                                <p><strong>Status:</strong> Connected to eCourts Services</p>
+                                <p><strong>Instructions:</strong> Please solve the captcha above and click Search again</p>
+                            </div>
+                        `;
+                    }
+                    // Handle successful case search
+                    else if (listing.status === 'case_found') {
+                        let caseDetailsHtml = '';
+                        if (listing.case_details) {
+                            caseDetailsHtml = Object.entries(listing.case_details).map(([key, value]) =>
+                                `<p><strong>${key}:</strong> ${value}</p>`
+                            ).join('');
+                        }
+
+                        resultsDiv.innerHTML = `
+                            <div class="success">
+                                <h3>Case Information Found!</h3>
+                                <p><strong>CNR:</strong> ${listing.cnr}</p>
+                                ${caseDetailsHtml}
+                                <p><em>Real case data from eCourts</em></p>
+                            </div>
+                        `;
+                    }
+                    // Handle other statuses
+                    else {
+                        resultsDiv.innerHTML = `
+                            <div class="success">
+                                <h3>eCourts Connection Successful</h3>
+                                <p><strong>Status:</strong> ${listing.website_status || 'Connected'}</p>
+                                <p><strong>Message:</strong> ${listing.message}</p>
+                                <p><em>Real data from eCourts</em></p>
+                            </div>
+                        `;
+                    }
+                } else {
+                    resultsDiv.innerHTML = `<div class="error">Error: ${result.error}</div>`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="error">Network error: ${error.message}</div>`;
+            }
+        });
+
+        // Handle cause list download
+        document.getElementById('causeListBtn').addEventListener('click', async function () {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.style.display = 'block';
+            resultsDiv.innerHTML = '<div class="loading">Downloading cause list...</div>';
+
+            try {
+                const today = new Date();
+                const dateStr = today.getDate().toString().padStart(2, '0') + '-' +
+                    (today.getMonth() + 1).toString().padStart(2, '0') + '-' +
+                    today.getFullYear();
+                const response = await fetch(`/causelist/Demo Court/${dateStr}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    const causeList = result.data;
+
+                    let casesHtml = '';
+                    if (causeList.sample_cases) {
+                        casesHtml = causeList.sample_cases.map(caseItem =>
+                            `<li><strong>${caseItem.serial}:</strong> ${caseItem.case} - <em>${caseItem.status}</em></li>`
+                        ).join('');
+                    }
+
+                    let featuresHtml = '';
+                    if (causeList.available_features) {
+                        featuresHtml = causeList.available_features.map(feature =>
+                            `<li>${feature}</li>`
+                        ).join('');
+                    }
+
+                    resultsDiv.innerHTML = `
+                        <div class="success">
+                            <h3>eCourts Cause List Service</h3>
+                            <p><strong>Status:</strong> ${causeList.message}</p>
+                            <p><strong>Court:</strong> ${causeList.court}</p>
+                            <p><strong>Date:</strong> ${causeList.date}</p>
+                            <p><strong>Note:</strong> ${causeList.note}</p>
+                            ${casesHtml ? `<p><strong>Sample Cases:</strong></p><ul>${casesHtml}</ul>` : ''}
+                            ${featuresHtml ? `<p><strong>Available Features:</strong></p><ul>${featuresHtml}</ul>` : ''}
+                            <p><em>Real data from eCourts Services</em></p>
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `<div class="error">Error: ${result.error}</div>`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="error">Network error: ${error.message}</div>`;
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,43 @@
+{
+  "status": "connected",
+  "court": "Demo District Court",
+  "date": "20-10-2025",
+  "message": "Connected to eCourts Services",
+  "cause_list_links_found": 5,
+  "website_accessible": true,
+  "note": "Demo cause list with sample cases",
+  "real_data": true,
+  "demo_mode": true,
+  "available_features": [
+    "Court selection available",
+    "Date-specific cause lists",
+    "PDF download capability"
+  ],
+  "sample_cases": [
+    {
+      "serial": "001",
+      "case": "DEMO/001/2024 - Civil Suit",
+      "status": "Listed"
+    },
+    {
+      "serial": "002",
+      "case": "DEMO/002/2024 - Criminal Case",
+      "status": "Pending"
+    },
+    {
+      "serial": "003",
+      "case": "DEMO/003/2024 - Family Matter",
+      "status": "Hearing"
+    },
+    {
+      "serial": "004",
+      "case": "DEMO/004/2024 - Property Dispute",
+      "status": "Listed"
+    },
+    {
+      "serial": "005",
+      "case": "DEMO/005/2024 - Contract Dispute",
+      "status": "Final Arguments"
+    }
+  ]
+}
